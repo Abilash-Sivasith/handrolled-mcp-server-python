@@ -1,14 +1,7 @@
-from method_handler import list_tools, init
+from method_handler import list_tools, init, tools_calls_router
+from json_rpc_responses import make_json_rpc_responce, make_error_json_rpc_responce, ToolCallError
 
-ERROR_CODES = {
-    -32700: "Parse error",
-    -32600: "Invalid Request",
-    -32601: "Method not found",
-    -32602: "Invalid params",
-    -32603: "Internal error",
-}
-
-def dispatch(request: dict) -> function:
+def dispatch(request: dict) -> dict:
     method = request['method']
     id = request['id']
 
@@ -22,29 +15,16 @@ def dispatch(request: dict) -> function:
 
 
     elif method == 'tools/call':
-        pass
-
+        params = request.get('params', {})
+        try:
+            tool_call_result = tools_calls_router(params.get('name'), params.get('arguments') or {})
+        except ToolCallError as e:
+            return make_error_json_rpc_responce(id, e.code)
+        
+        responce = make_json_rpc_responce(id, tool_call_result)
 
     else: 
          return make_error_json_rpc_responce(id, -32601)       
 
     
     return responce
-
-def make_json_rpc_responce(id: int, result):
-    json_rpc_responce = {
-        'jsonrpc': '2.0',
-        'id': {id},
-        'result': {result}
-    }
-    return json_rpc_responce
-
-def make_error_json_rpc_responce(id: int, error_code: int):
-        return {
-            "jsonrpc": "2.0",
-            "id": {id},
-            "error": {
-                "code": error_code,
-                "message": ERROR_CODES[error_code]
-            }
-        }
