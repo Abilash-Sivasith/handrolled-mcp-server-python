@@ -1,11 +1,14 @@
 from method_handler import list_tools, init, tools_calls_router
 from json_rpc_responses import make_json_rpc_responce, make_error_json_rpc_responce, ToolCallError
 
-def dispatch(request: dict) -> dict:
+def dispatch(request: dict) -> dict | None:
     method = request['method']
-    id = request['id']
+    id = request.get('id')
 
-    if method == 'initalize':
+    if 'id' not in request:
+        return None
+
+    if method == 'initialize':
         server_init = init(id)
         responce = make_json_rpc_responce(id, server_init)
 

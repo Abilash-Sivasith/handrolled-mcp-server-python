@@ -4,7 +4,7 @@ import sys
 class StdioTransport(Transport):
 
     def recieve(self):
-        line : str = sys.stdin.readline
+        line : str = sys.stdin.readline()
         if line == None:
             return None
         else:

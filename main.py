@@ -26,8 +26,10 @@ def main():
         except Exception as e:
             print(f"Error parsing input: {e}")
 
-        responce = dispatch(json_inputs) # returns json-rpc message
-        mcp_server.transportProtocol.send(responce)
+        responce = dispatch(json_inputs) # returns json-rpc message, or None for notifications
+        if responce is not None:
+            mcp_server.transportProtocol.send(responce)
 
 
 
+main()
