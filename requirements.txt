@@ -1,0 +1,4 @@
+# Runtime dependencies
+# Everything else this project imports (json, math, sys, abc) is in the standard library.
+
+jsonschema>=4.0,<5
