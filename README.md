@@ -70,6 +70,42 @@ python3 main.py
 
 Type (or paste) one line at a time and press enter; the corresponding response is printed to stdout. Press `Ctrl+C` to stop the server.
 
+# Logging
+
+The server logs what it's doing to **stderr** — stdout is reserved for JSON-RPC, so
+writing logs there would corrupt the protocol stream. Running in a terminal you'll see
+the log inline; under the MCP Inspector it shows up in the Inspector's server log pane.
+
+Levels, lowest to highest:
+
+| Level | What it shows |
+|---|---|
+| `DEBUG` | raw wire traffic — every line in and out |
+| `INFO` | server lifecycle, and each JSON-RPC method as it arrives |
+| `TOOL` | tool invocations: name, arguments, result, and how long it took |
+| `ERROR` | parse failures, unknown methods/tools, invalid arguments, tools that raised |
+
+`TOOL` is a custom level sitting between `INFO` and `WARNING`, so `MCP_LOG_LEVEL=TOOL`
+shows tool calls and errors without the rest of the method chatter.
+
+```
+00:28:19 INFO  request: tools/call (id=3)
+00:28:19 TOOL  call add({'a': 2, 'b': 3})
+00:28:19 TOOL  done add -> 5 (0.0 ms)
+00:28:19 INFO  request: tools/call (id=4)
+00:28:19 TOOL  call add({'a': 'two', 'b': 3})
+00:28:19 ERROR invalid arguments for add: 'two' is not of type 'number'
+```
+
+Set the level with the `MCP_LOG_LEVEL` environment variable (default `INFO`; an
+unrecognised name falls back to `INFO`):
+
+```bash
+MCP_LOG_LEVEL=DEBUG python3 main.py
+```
+
+Levels are colour-coded when stderr is a terminal. Set `NO_COLOR` to turn that off.
+
 # Available Tools
 
 | Tool | Description |
@@ -85,6 +121,7 @@ Full schemas for each tool live in [tools_descriptions.json](tools_descriptions.
 
 ```
 main.py                  # entry point, read/dispatch/send loop
+logger.py                # stderr logger (INFO / TOOL / ERROR levels)
 json_parser.py           # raw string -> dict
 json_rpc_dispatcher.py   # routes JSON-RPC methods to handlers
 json_rpc_responses.py    # JSON-RPC result/error message builders
