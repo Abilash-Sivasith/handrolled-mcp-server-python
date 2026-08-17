@@ -73,7 +73,7 @@
     },
     {
       "name": "glaze",
-      "description": "Returns a short, compliment about MCP. Takes no input.",
+      "description": "Returns a short compliment about Abilash, the author of this server. Takes no input.",
       "inputSchema": {
         "type": "object",
         "properties": {},

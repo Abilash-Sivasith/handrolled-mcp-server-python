@@ -17,12 +17,12 @@ def make_json_rpc_responce(id: int, result):
         'result': result
     }
 
-def make_error_json_rpc_responce(id: int, error_code: int):
+def make_error_json_rpc_responce(id: int | None, error_code: int):
     return {
         "jsonrpc": "2.0",
         "id": id,
         "error": {
             "code": error_code,
-            "message": ERROR_CODES[error_code]
+            "message": ERROR_CODES.get(error_code, "Server error")
         }
     }

@@ -1,10 +1,21 @@
 import json
+from pathlib import Path
+
 from jsonschema import validate, exceptions
 
 from json_rpc_responses import ToolCallError
 from tools import add, secret_function, is_fibonacci_number, glaze
 
-SUPPORTED_VERSIONS = '2025-11-25'
+# newest first, so SUPPORTED_VERSIONS[0] is what we fall back to
+SUPPORTED_VERSIONS = [
+    '2025-11-25',
+    '2025-06-18',
+    '2025-03-26',
+    '2024-11-05',
+]
+
+# resolved against this file, not the cwd, so the server runs from anywhere
+TOOLS_DESCRIPTION_PATH = Path(__file__).parent / 'tools_descriptions.json'
 
 TOOL_HANLDER = {
     'add': add,
@@ -14,9 +25,12 @@ TOOL_HANLDER = {
 
 }
 
-def init(id: int):
+def init(params: dict):
+    requested = params.get('protocolVersion')
+    negotiated = requested if requested in SUPPORTED_VERSIONS else SUPPORTED_VERSIONS[0]
+
     return {
-        "protocolVersion": SUPPORTED_VERSIONS,
+        "protocolVersion": negotiated,
         "capabilities": {
             "tools": {
                 "listChanged": False
@@ -29,7 +43,7 @@ def init(id: int):
     }
 
 def list_tools():
-    with open('tools_descriptions.json', 'r') as file:
+    with open(TOOLS_DESCRIPTION_PATH, 'r') as file:
         data = json.load(file)
     return data
 

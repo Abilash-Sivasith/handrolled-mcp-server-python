@@ -14,7 +14,7 @@ class Transport(ABC):
         pass
 
     @abstractmethod
-    def send(self, input: str) -> None:
+    def send(self, message: dict) -> None:
         """
         sends msg back to the mcp client
         """
