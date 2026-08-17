@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "handrolled-server": {
+      "command": "/Users/abilashsivasith/Desktop/handrolled-mcp-server-python/venv/bin/python",
+      "args": ["/Users/abilashsivasith/Desktop/handrolled-mcp-server-python/main.py"]
+    }
+  }
+}

@@ -5,6 +5,7 @@ from jsonschema import validate, exceptions
 
 from json_rpc_responses import ToolCallError
 from tools import add, secret_function, is_fibonacci_number, glaze
+from tool_decorator import tool_registry
 
 # newest first, so SUPPORTED_VERSIONS[0] is what we fall back to
 SUPPORTED_VERSIONS = [
@@ -43,9 +44,10 @@ def init(params: dict):
     }
 
 def list_tools():
-    with open(TOOLS_DESCRIPTION_PATH, 'r') as file:
-        data = json.load(file)
-    return data
+    # with open(TOOLS_DESCRIPTION_PATH, 'r') as file:
+    #     data = json.load(file)
+    # return data
+    return tool_registry
 
 def tools_calls_router(tool_name, arguments):
     tool_description = list_tools()
