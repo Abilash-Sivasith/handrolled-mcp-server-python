@@ -47,7 +47,9 @@ def list_tools():
     # with open(TOOLS_DESCRIPTION_PATH, 'r') as file:
     #     data = json.load(file)
     # return data
-    return tool_registry
+
+    # the registry is keyed by tool name for lookup; tools/list wants a plain array
+    return {"tools": list(tool_registry.values())}
 
 def tools_calls_router(tool_name, arguments):
     tool_description = list_tools()

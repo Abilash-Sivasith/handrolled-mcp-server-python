@@ -40,14 +40,20 @@ import inspect
 
 tool_registry = {}
 
+JSON_TYPES = {
+    int: "integer",
+    float: "number",
+    str: "string",
+    bool: "boolean",
+}
+
 def tool():
     def dec(func):
         sig = inspect.signature(func)
-        print(sig)
         tool_registry[func.__name__] = {
-            "name": func,
+            "name": func.__name__,
             "description": inspect.getdoc(func) or "",
-            'inputSchema': ""
+            'inputSchema': build_input_schema(sig)
         }
         return func
 
@@ -58,21 +64,18 @@ def build_input_schema(signature):
     required = []
 
     for parameter in signature.parameters.values():
-        json_type = {
-            int: "integer",
-            float: "number",
-            str: "string",
-            bool: "boolean",
-        }.get(parameter.annotation, "string")
+        # an unannotated parameter is left untyped -- guessing "string" would make the
+        # schema reject calls the tool would happily accept
+        parameter_schema = {}
+        if parameter.annotation in JSON_TYPES:
+            parameter_schema["type"] = JSON_TYPES[parameter.annotation]
 
-        properties[parameter.name] = {
-            "type": json_type
-        }
+        properties[parameter.name] = parameter_schema
 
         if parameter.default is inspect.Parameter.empty:
             required.append(parameter.name)
         else:
-            properties[parameter.name]["default"] = parameter.default
+            parameter_schema["default"] = parameter.default
 
     return {
         "type": "object",
