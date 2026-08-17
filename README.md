@@ -96,14 +96,6 @@ transport/
   stdio.py                # stdio implementation of Transport
 ```
 
-# Known Issues
-
-This is an actively evolving learning project. Current known gaps:
-
-- `StdioTransport.send` writes responses with Python's `print()` on a `dict`, not `json.dumps`, so stdout output is not yet valid JSON.
-- `StdioTransport.recieve` checks for EOF with `line == None`, but `readline()` returns `""` at EOF, so the server currently doesn't exit cleanly when stdin closes.
-- No logging yet (see [todo](todo)).
-
 # License
 
 MIT — see [LICENSE](LICENSE).

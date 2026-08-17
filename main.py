@@ -1,6 +1,8 @@
 """
 Hand Rolled MCP server without any framework
 """
+import sys
+
 from transport.transport import Transport
 from transport.stdio import StdioTransport
 
@@ -13,7 +15,7 @@ class MCPServer:
 
 def main():
 
-    print("---------------- Hand Rolled MCP Server Started ----------------")
+    print("---------------- Hand Rolled MCP Server Started ----------------", file=sys.stderr)
     communication_protocol = StdioTransport()
     mcp_server = MCPServer(communication_protocol)
     # TODO: implement a logger
@@ -24,7 +26,8 @@ def main():
         try:
             json_inputs = json_parser(raw_input)
         except Exception as e:
-            print(f"Error parsing input: {e}")
+            print(f"Error parsing input: {e}", file=sys.stderr)
+            continue
 
         responce = dispatch(json_inputs) # returns json-rpc message, or None for notifications
         if responce is not None:

@@ -1,2 +1,4 @@
 - Add logger
 - how does FastMCP generate a schema from a function
+     - implelemt this
+- Support easy edition of new tools via a decorator

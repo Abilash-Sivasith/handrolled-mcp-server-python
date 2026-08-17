@@ -21,10 +21,14 @@ def dispatch(request: dict) -> dict | None:
         params = request.get('params', {})
         try:
             tool_call_result = tools_calls_router(params.get('name'), params.get('arguments') or {})
+            
         except ToolCallError as e:
             return make_error_json_rpc_responce(id, e.code)
-        
-        responce = make_json_rpc_responce(id, tool_call_result)
+
+        responce = make_json_rpc_responce(id, {
+            "content": [{"type": "text", "text": str(tool_call_result)}],
+            "isError": False
+        })
 
     else: 
          return make_error_json_rpc_responce(id, -32601)       
