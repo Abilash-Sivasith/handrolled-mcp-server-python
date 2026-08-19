@@ -22,8 +22,8 @@ def is_fibonacci_number(a: int):
     Determines whether a given integer is a Fibonacci number, using the identity that
     n is a Fibonacci number if and only if 5n^2 + 4 or 5n^2 - 4 is a perfect square.
     """
-    # TODO: this logic is wrong
-    return int((math.sqrt((5 * (a ** 2) + 4)))).is_integer() or int((math.sqrt((5 * (a ** 2) - 4)))).is_integer()
+    x, y = 5 * (a ** 2) + 4, 5 * (a ** 2) - 4
+    return math.isqrt(x) ** 2 == x or (y >= 0 and math.isqrt(y) ** 2 == y)
 
 is_fibonacci_number = tool()(is_fibonacci_number)
 
